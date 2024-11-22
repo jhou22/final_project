@@ -5,3 +5,5 @@ from .models import *
 # Register your models here.
 
 admin.site.register(User, UserAdmin)
+admin.site.register(PlayerProfile)
+admin.site.register(Friend)

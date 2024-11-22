@@ -4,6 +4,6 @@ from .forms import *
 
 # Create your views here.
 
-class CreatePlayerView(CreateView):
-    form_class = CreatePlayerForm
-    template_name = 'accounts/register.html'
+# class CreatePlayerView(CreateView):
+#     form_class = CreatePlayerForm
+#     template_name = 'accounts/register.html'

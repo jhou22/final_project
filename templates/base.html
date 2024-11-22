@@ -56,19 +56,19 @@
             <!-- Add "active" class when you're on that page" -->
             <a class="nav-link active" href="/">Home</a>
           </li>
-          {% if user.is_authenticated %}
+          {% if request.user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="/profile/eric-simons">
               {% comment %} <img src="" class="user-pic" /> {% endcomment %}
-              Eric Simons
+              {{request.user}}
             </a>
           </li>
           {% else %}
           <li class="nav-item">
-            <a class="nav-link">Sign in</a>
+            <a class="nav-link" href="{% url "account_login" %}">Sign in</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link">Sign up</a>
+            <a class="nav-link" href="{% url "account_signup" %}">Sign up</a>
           </li>
           {% endif %}
         </ul>
