@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<img src="{{profile.profile_picture.url}}" alt="profile pictures" width="100" height="100">
+
+<h1>{{profile.username}}</h1>
+<h2>Joined {{profile.join_date}}</h2>
+<h2>Born {{profile.dob}}</h2>
+<h3>Link: <a href="{{profile.get_absolute_url}}">Link</a></h3>
+
+{% endblock %}

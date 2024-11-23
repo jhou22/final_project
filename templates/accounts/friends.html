@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{username}}</h1>
+<div>
+    {% for friend in friends %}
+        {% if friend.from_user.username == username %}
+            <p>{{friend.to_user.username}}</p>
+            {% else %}
+            <p>{{friend.from_user.username}}</p>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock  %}

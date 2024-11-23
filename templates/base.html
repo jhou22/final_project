@@ -58,9 +58,15 @@
           </li>
           {% if request.user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="/profile/eric-simons">
+            <a class="nav-link" href="{% url "profile" request.user.playerprofile.pk %}">
               {% comment %} <img src="" class="user-pic" /> {% endcomment %}
               {{request.user}}
+            </a>
+          </li>
+          <li>
+            <a class="nav-link" href="{% url "friends" request.user.playerprofile.pk %}">
+              {% comment %} <img src="" class="user-pic" /> {% endcomment %}
+              {{request.user}} friends
             </a>
           </li>
           {% else %}
