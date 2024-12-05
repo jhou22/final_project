@@ -1,0 +1,13 @@
+#guess-container {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    /* align-items: center;
+    justify-content: center; */
+    margin-bottom: 25px;
+}
+.guesses-div {
+    border: 1px solid black;
+    width: 500px;
+    height: 20px;
+}

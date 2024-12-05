@@ -1,8 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 {% if request.user.is_authenticated %}
-<p>Welcome home, {{request.user}}</p>
+<p>Welcome home, a {{request.user}}</p>
 {% else %}
 <p>Welcome home, please login or create an account</p>
 {% endif %}
+<script>
+    
+</script>
 {% endblock %}

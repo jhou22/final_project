@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import *
 from django.urls import reverse
 from django.utils import timezone
+import uuid
 # Create your models here.
 
 # in the event that User is extended to include more than just what the default User model provides
@@ -14,7 +15,7 @@ class PlayerProfile(models.Model):
     # with one-to-one fields and foreign keys, playerprofile and user can access each other due to the reverse relationships (related_name field)
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, verbose_name='user')
     email = models.EmailField(verbose_name="Email address", max_length=255, unique=True)
-    username = models.CharField(max_length=60, unique=True, verbose_name="Username", default='anonymous_user')
+    username = models.CharField(max_length=60, unique=True, verbose_name="Username", default=uuid.uuid4())
     join_date = models.DateTimeField(default=timezone.now, verbose_name='Account creation date')
     dob = models.DateField(verbose_name='date of birth', default=date(1970, 1, 1).isoformat())
     profile_picture = models.ImageField(default='default-profile-icon.png', verbose_name='Profile picture', upload_to='profile-pictures/')

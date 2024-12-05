@@ -4,3 +4,6 @@ from .models import *
 
 admin.site.register(Comment)
 admin.site.register(Item)
+admin.site.register(DailyPuzzle)
+admin.site.register(PracticePuzzle)
+admin.site.register(Guess)
