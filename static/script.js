@@ -45,15 +45,32 @@ function setState(currentDate, guess, difference, logged_in, actual_price) {
     localStorage.setItem("game-status", gameStatus)
     if (localStorage.getItem("game-status") == "LOSE") {
       document.getElementById('game-status').innerText = `You Lost! The correct answer was ${actual_price}`
-    } else {
-      document.getElementById('game-status').innerText = ''
     }
     
     if (localStorage.getItem("game-status") == "WIN") {
       document.getElementById('game-status').innerText = `You Win! The correct answer was ${actual_price}`
-    } else {
+    }
+
+    if (localStorage.getItem("game-status") == "UNKNOWN") {
       document.getElementById('game-status').innerText = ''
     }
+    return
+  }
+  if (values && values !== 'undefined' && values[currentDate] !== 'undefined') {
+    console.log(gameStatus !== 'WIN')
+    if (values[currentDate].length < 6 && guess !== 'None' && difference !== 'None' && (gameStatus != 'WIN' && gameStatus != 'LOSE')) {
+      if (difference == 'exact') {
+        localStorage.setItem("game-status", 'WIN')
+      }
+      values[currentDate].push({ guess: guess, difference: difference });
+      if (values[currentDate].length >= 6 && difference != 'exact') {
+        localStorage.setItem("game-status", "LOSE")
+      }
+    }
+  } else {
+    values = { [currentDate]: [] };
+    localStorage.setItem("game-state", JSON.stringify(values));
+    localStorage.setItem("game-status", "UNKNOWN");
     return
   }
   // not logged in case
@@ -65,8 +82,10 @@ function setState(currentDate, guess, difference, logged_in, actual_price) {
     }
     localStorage.setItem("game-state", JSON.stringify(values));
     localStorage.setItem("game-status", "WIN")
+    document.getElementById('game-status').innerText = `You Win! The correct answer was ${actual_price}`
     return
   }
+  console.log("Moving on")
   if (gameStatus == "LOSE") {
     for (let i = 0; i < values[currentDate].length; i++) {
       // console.log(`i = ${i}, ${values[currentDate][i].guess}`)
@@ -75,22 +94,11 @@ function setState(currentDate, guess, difference, logged_in, actual_price) {
     }
     localStorage.setItem("game-state", JSON.stringify(values));
     localStorage.setItem("game-status", "LOSE")
+    document.getElementById('game-status').innerText = `You Lost! The correct answer was ${actual_price}`
     return
   }
   // hasn't won or lost yet
-  if (values && values !== 'undefined' && values[currentDate] !== 'undefined') {
-    if (values[currentDate].length < 6 && guess !== 'None' && difference !== 'None') {
-      if (difference == 'exact') {
-        localStorage.setItem("game-status", 'WIN')
-      }
-      values[currentDate].push({ guess: guess, difference: difference });
-      if (values[currentDate].length >= 6 && difference != 'exact') {
-        localStorage.setItem("game-status", "LOSE")
-      }
-    }
-  } else {
-    values = { [currentDate]: [] };
-  }
+  
   for (let i = 0; i < values[currentDate].length; i++) {
     // console.log(`i = ${i}, ${values[currentDate][i].guess}`)
     document.getElementById(`guess${alphabet[i + 1]}`).innerText = values[currentDate][i].guess
@@ -99,13 +107,13 @@ function setState(currentDate, guess, difference, logged_in, actual_price) {
   localStorage.setItem("game-state", JSON.stringify(values));
   if (localStorage.getItem("game-status") == "LOSE") {
     document.getElementById('game-status').innerText = `You Lost! The correct answer was ${actual_price}`
-  } else {
-    document.getElementById('game-status').innerText = ''
   }
   
   if (localStorage.getItem("game-status") == "WIN") {
     document.getElementById('game-status').innerText = `You Win! The correct answer was ${actual_price}`
-  } else {
+  }
+
+  if (localStorage.getItem("game-status") == "UNKNOWN") {
     document.getElementById('game-status').innerText = ''
   }
 }

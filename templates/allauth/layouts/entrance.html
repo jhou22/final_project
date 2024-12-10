@@ -1,0 +1,27 @@
+{% extends "allauth/layouts/base.html" %}
+{% load i18n allauth %}
+{% block body %}
+{% comment %} based on django-allauth template {% endcomment %}
+    <div class="container_1">
+        <div class="container_2">
+            <div class="container_3">
+                <div class="container_4">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% element alert level=message.tags %}
+                                {% slot message %}
+                                    {{ message }}
+                                {% endslot %}
+                            {% endelement %}
+                        {% endfor %}
+                    {% endif %}
+                    <div class="container_5">
+                        <div id="content_1" class="container_6">
+                            {% block content %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

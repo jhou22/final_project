@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div id='practice-puzzle-container'>
+    <h1>Practice Puzzle</h1>
+    <h2>{{puzzle.item.name}}</h2>
+    <img src="{{puzzle.item.image.image}}" width="300" height="300"/>
+</div>
+{% endblock content %}
+

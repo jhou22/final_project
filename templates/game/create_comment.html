@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-<form method="post" enctype="multipart/form-data">
+{% comment %} form to submit comment creation {% endcomment %}
+<form method="post" enctype="multipart/form-data" id='comment-form'>
     {% csrf_token %}
-    {{form}}
-    <button type="submit" value="Create">Submit</button>
+    <table>
+    {{form.as_table}}
+    </table>
+    <button type="submit" value="Create" id='comment-submit-button'>Submit</button>
 </form>
 {% endblock content %}

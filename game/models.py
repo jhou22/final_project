@@ -1,12 +1,33 @@
-from django.db import models
+from django.db import DataError, models
 from accounts.models import PlayerProfile
-
+from dotenv import load_dotenv
+import os
+import requests
 # Create your models here.
+class ItemImage(models.Model):
+    image_url = models.URLField(null=True, blank=True)
+    image_file = models.ImageField(null=True, blank=True, upload_to='item-images/')
+
+    def save(self, *args, **kwargs) -> None:
+        if self.image_url is None and self.image_file is None:
+            raise DataError('image_url and image_file cannot both be null')
+        super().save(*args, **kwargs)
+
+    @property
+    def image(self) -> str:
+        if self.image_url is not None:
+            print(self.image_file)
+            return self.image_url
+        else:
+            return self.image_file.url
+
 class Item(models.Model):
     price = models.DecimalField(verbose_name='Item price', default='0.00', decimal_places=2, max_digits=10, blank=False, null=False)
     name = models.TextField(verbose_name='Item name', default='Kroger item', blank=False, null=False)
-    image = models.ImageField(verbose_name='Item image', upload_to='item-images/', default='defaults/grocery-item.jpg', blank=False, null=False)
-
+    image = models.OneToOneField(ItemImage, on_delete=models.CASCADE, verbose_name='Item image')
+    daily_item = models.BooleanField(verbose_name='Potential daily item', default=True, blank=False, null=False)
+    used_as_daily = models.BooleanField(verbose_name="Used as daily item", default=False, blank=False, null=False)
+    practice_item = models.BooleanField(verbose_name='Potential practice item', default=False, blank=False, null=False)
     def __str__(self) -> str:
         return f'{self.name}'
 
@@ -64,4 +85,57 @@ class Comment(models.Model):
     def __str__(self) -> str:
         return f'{self.user}\'s comment at {self.timestamp}'
     
-    
+def get_items():
+    '''Gets 150 daily items and 150 practice items for use with the daily and practice puzzles'''
+    load_dotenv()
+    API_KEY = os.getenv('API_KEY')
+    print(API_KEY)
+    url = "https://api.kroger.com/v1/products" # get kroger items in the cincinatii ohio krogers specifically
+    for i in range(6): # you can only go up to 50 per search, up to at most 300 items, so increment 50 each time
+        res = requests.get(url=url, headers={"Content-Type": "application/json", "Authorization": "Bearer " + API_KEY}, params={"filter.locationId": "01400390", "filter.limit": 50, "filter.start": 50 * i, "filter.term": "Kroger"})
+        res = res.json()
+        res_length = len(res['data'])
+        # creates daily items
+        print("Creating Daily Items")
+        for index in range(int(res_length / 2)):
+            try:
+                images = res['data'][index]['images']
+                i = 0
+                for image in images:
+                    if image['perspective'] == 'front':
+                        break
+                    i+=1
+                item_name = res['data'][index]['description']
+                item_price = res['data'][index]['items'][0]['price']['regular']
+                image = ItemImage.objects.create(image_url=res['data'][index]['images'][i]['sizes'][1]['url'])
+                Item.objects.create(image=image, name=item_name, daily_item=True, price=item_price)
+            except KeyError:
+                # some items might not have prices or anything
+                print(f"Skipped")
+        # creates practice items
+        print("Creating practice items")
+        for index in range(int(res_length / 2)):
+            try:
+                images = res['data'][index + int(res_length / 2)]['images']
+                i = 0
+                for image in images:
+                    if image['perspective'] == 'front':
+                        break
+                    i+=1
+                item_name = res['data'][index + int(res_length / 2)]['description']
+                item_price = res['data'][index + int(res_length / 2)]['items'][0]['price']['regular']
+                image = ItemImage.objects.create(image_url=res['data'][index + int(res_length / 2)]['images'][i]['sizes'][1]['url'])
+                Item.objects.create(image=image, name=item_name, daily_item=False, practice_item=True, price=item_price)
+            except:
+                # some items might not have prices or anything
+                print(f"Skipped")
+                
+def create_practice_puzzles():
+    # all items marked as potential practice puzzle items will be created
+    potential_practice_puzzles = Item.objects.filter(daily_item=False)
+    practice_puzzles = PracticePuzzle.objects.all()
+    for practice_puzzle in practice_puzzles:
+        potential_practice_puzzles.exclude(name=practice_puzzle.item.name) # chose a random field, but any field in the item is fine
+    # create practice puzzles
+    for item in potential_practice_puzzles:
+        PracticePuzzle.objects.create(item=item)

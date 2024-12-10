@@ -1,19 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-    <form action="{% url "profiles" %}">
+<div id="profiles-container">
+    <form action="{% url "profiles" %}" id="search-player-form">
         {{form}}
         <button type='submit'>Search</button>
     </form>
     <div>
-    <table>
-        <tr>
+    <table class="players-table">
+        <tr class="players-categories">
             <th>Profile Picture</th>
             <th>Username</th>
         </tr>
         {% for profile in profiles %}
+        <tr>
             <td><a href={% url "profile" profile.pk %}><img src="{{profile.profile_picture.url}}" width="200" height="200"/></a></td>
             <td><a href={% url "profile" profile.pk %}>{{profile.username}}</a></td>
-        {% endfor %}
+        </tr>
+            {% endfor %}
     </table>
     </div>
+</div>
 {% endblock content %}

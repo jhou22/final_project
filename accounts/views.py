@@ -8,11 +8,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
-# class CreatePlayerView(CreateView):
-#     form_class = CreatePlayerForm
-#     template_name = 'accounts/register.html'
-
 class ShowPlayerView(LoginRequiredMixin, DetailView):
+    '''Shows a player and passes in potential friend relationships if it exists'''
     model = PlayerProfile
     template_name = 'accounts/profile.html'
     context_object_name = 'profile'
@@ -32,6 +29,7 @@ class ShowPlayerView(LoginRequiredMixin, DetailView):
     
     
 class ShowFriendsView(LoginRequiredMixin, ListView):
+    '''shows all friends based on user'''
     model = Friend
     template_name = 'accounts/friends.html'
     context_object_name = 'friends'
@@ -48,6 +46,7 @@ class ShowFriendsView(LoginRequiredMixin, ListView):
 
 # https://stackoverflow.com/questions/38047408/how-to-allow-user-to-delete-account-in-django-allauth
 class DeletePlayerView(LoginRequiredMixin, DeleteView):
+    '''deletes an account'''
     model = User
     success_url = reverse_lazy('home')
     template_name = 'accounts/delete_profile.html'
@@ -92,6 +91,7 @@ class DeletePlayerView(LoginRequiredMixin, DeleteView):
     #     return render(request, 'accounts/delete_profile.html', {'form': form})
     
 class UpdatePlayerView(LoginRequiredMixin, UpdateView):
+    '''updates a player's information'''
     form_class = UpdatePlayerForm
     model = PlayerProfile
     template_name = 'accounts/update_profile.html'
@@ -107,6 +107,7 @@ class UpdatePlayerView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 class ProfileListView(LoginRequiredMixin, ListView):
+    '''shows all profiles based on search queries'''
     template_name = 'accounts/profiles.html'
     context_object_name = 'profiles'
     model = PlayerProfile
@@ -132,6 +133,7 @@ class ProfileListView(LoginRequiredMixin, ListView):
         return qs
 
 class CreateFriendView(LoginRequiredMixin, View):
+    '''creates friend'''
     def dispatch(self, request, *args, **kwargs):
         from_user = PlayerProfile.objects.get(user=self.request.user)
         to_user = PlayerProfile.objects.get(pk=kwargs.get('to_user_pk'))

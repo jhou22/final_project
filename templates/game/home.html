@@ -1,18 +1,28 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+<div id="intro">
 {% if request.user.is_authenticated %}
-<p>Welcome home, a {{request.user}}</p>
-{% else %}
-<p>Welcome home, please login or create an account</p>
+<p>Welcome to KROGERDLE, {{request.user}}</p>
+{% else %} 
+<p>Welcome to KROGERDLE, please login or create an account</p>
 {% endif %}
+
+    {% if random_puzzle_pk %}
+    <a class="nav-link" href="{% url "random_puzzle" random_puzzle_pk %}">
+      {% comment %} <img src="" class="user-pic" /> {% endcomment %}
+      Random Puzzle
+    </a>
+    {% endif %}
+
+</div>
 <div id="game-container">
 <div id='puzzle-container'>
     <h1>Daily Puzzle {{date}}</h1>
     <h2>{{item_name}}</h2>
-    <img src="{{item_image}}"/>
+    <img src="{{item_image}}" width="300" height="300"/>
 </div>
-<div>
+<div id="guess-parent-container">
     <div id='game-status'></div>
     <div id="guess-container">
         <div class='guess-div-container'>
@@ -40,7 +50,7 @@
         <div name='guesssix-status' id='guesssix-status' class='guess-status'></div>
         </div>
     </div>
-    <form method="post">
+    <form method="post" id="guess-form">
         {% csrf_token %}
         {{form}}
         <input type="hidden" value='{{submission_validation}}' id="submission_validation" name="submission_validation"></input>
@@ -48,13 +58,17 @@
     </form>
     <div id='comments-container'>
         {% for comment in comments %}
-            <h1>{{comment.user}}'s comment at {{comment.timestamp}}</h1>
+            <h3>{{comment.user}}'s comment at {{comment.timestamp}}</h3>
             {% if comment.image %}
             <img src="{{comment.image.url}}" width='100' height='100'/>
             {% endif %}
             <p>{{comment.message}}</p>
+            <hr>
         {% endfor %}
-        <a href={% url "create_comment" %}>Make a comment</a>
+        
+        {% if show_comment_link %}
+            <a href={% url "create_comment" %}>Make a comment</a>
+        {% endif %}
     </div>
 </div>
 </div>

@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect
 from datetime import date
-from .models import Guess, DailyPuzzle, Comment, PlayerProfile
+from .models import Guess, DailyPuzzle, Comment, PlayerProfile, PracticePuzzle
 from .forms import GameForm, CommentForm
 from decimal import Decimal
 import uuid
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import *
 from django.urls import reverse
+import random
 
 # Create your views here.
 def home(request):
+    '''home view'''
     num_to_string = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}
     # Get a daily puzzle
     daily_puzzle = get_daily_puzzle()
@@ -18,7 +20,7 @@ def home(request):
     submission_validation = uuid.uuid4()
     context = {
         "item_name": daily_puzzle.item.name,
-        "item_image": daily_puzzle.item.image.url,
+        "item_image": daily_puzzle.item.image.image,
         "item_price": daily_puzzle.item.price,
         "form": game_form,
         "closeness": None,
@@ -28,6 +30,8 @@ def home(request):
         "submission_validation": submission_validation,
         "logged_in": False,
         "comments": None,
+        "show_comment_link": False,
+        "random_puzzle_pk": None
     }
     if request.POST:
         form = GameForm(request.POST or None)
@@ -108,17 +112,21 @@ def home(request):
                 not guess.correctly_guessed and num_guesses >= 6
             ) or guess.correctly_guessed:
                 context["comments"] = Comment.objects.filter(puzzle=daily_puzzle)
+            context['random_puzzle_pk'] = get_random_puzzle(request)
         except Guess.DoesNotExist:
             Guess.objects.create(
                 owner=request.user.playerprofile,
                 daily_puzzle=daily_puzzle,
             )
             
-    
+    if context['comments'] is not None:
+        context['show_comment_link'] = True
+        
     return render(request, template_name, context)
 
 
 def get_daily_puzzle():
+    '''gets a daily puzzle from items thats marked as daily_item'''
     todays_date = date.today()
     return DailyPuzzle.objects.filter(date=todays_date)[0]
 
@@ -128,6 +136,7 @@ def create_daily_puzzle():
 
 
 def closeness_in_price(item_price, guess_price):
+    '''checks how close the guess is to the actual price'''
     closeness = ""  # guess is within 10% of the item price
     close_to_item_price_percentage = Decimal(0.25)
     lower_bound = item_price * Decimal(0.9)
@@ -149,6 +158,7 @@ def closeness_in_price(item_price, guess_price):
     return closeness
 
 class CreateCommentView(LoginRequiredMixin, CreateView):
+    '''Creates comments'''
     model = Comment
     form_class = CommentForm
     template_name = 'game/create_comment.html'
@@ -165,3 +175,21 @@ class CreateCommentView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('home')
     
+class RandomPracticePuzzleView(LoginRequiredMixin, DetailView):
+    '''gets a random puzzle based on the user's puzzle submissions'''
+    model = PracticePuzzle
+    template_name = 'game/random.html'
+    context_object_name = 'puzzle'
+    
+    
+def get_random_puzzle(request):
+        user = request.user
+        potential_practice_puzzles = PracticePuzzle.objects.all()
+        guesses = Guess.objects.filter(owner=user.playerprofile, daily_puzzle=None)
+        print(guesses)
+        if guesses is not None:
+            print(True)
+            for guess in guesses:
+                
+                potential_practice_puzzles.exclude(item=guess.practice_puzzle.item)
+        return random.choice(potential_practice_puzzles).pk

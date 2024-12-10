@@ -1,8 +1,10 @@
 .guess {
-    width: 70%;
-    height: 30px;
-    border: 1px solid black;
+    width: 100%;
+    height: fit-content;
+    border: 1px solid #bac2de;
     text-align: center;
+    font-size: large;
+    padding: 25px;
 }
 
 #guess-container {
@@ -17,14 +19,108 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 100%;
 }
 .guess-status {
-    width: 30%;
-    height: 30px;
-    border: 1px solid black;
+    width: 100%;
+    height: fit-content;
+    border: 1px dotted #bac2de;
+    font-size: large;
+    text-align: center;
+    padding: 25px;
 }
 
 .guess-div-container {
     display: flex;
     gap: 5px;
+}
+
+#guess-container {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    /* align-items: center;
+    justify-content: center; */
+    margin-bottom: 25px;
+}
+/* .guess {
+    width: 1000px;
+} */
+#intro {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+}
+#puzzle-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    /* justify-content: center; */
+}
+#guess-parent-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    width: 80%;
+}
+
+#guess-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#guess-form input {
+    padding: 5px;
+}
+#guess-form label {
+    font-size: large;
+}
+#guess-form button {
+    width: 100%;
+    padding: 10px;
+}
+#comments-container {
+    overflow: auto;
+    max-height: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 30px;
+}
+#comments-container hr {
+    background-color: #bac2de;
+    color: #bac2de;
+    width: 100%;
+}
+#comments-container a {
+    display: block;
+    background: #89dceb;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    color: #11111b;
+    font-weight: bold;
+}
+#comment-form {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#comment-submit-button {
+    margin-top: 20px;
+    width: 30%;
+}
+
+#intro {
+    display: flex;
+    flex-direction: column;
 }
