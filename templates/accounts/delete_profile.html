@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Are you sure you want to delete this account: {{user.username}}? This action is irreversible!</h2>
+<form method="post">
+    {% csrf_token %}
+    {{form}}
+    <button type="submit" value="Confirm">DELETE</button>
+</form>
+{% endblock content %}

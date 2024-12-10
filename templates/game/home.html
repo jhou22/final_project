@@ -6,7 +6,61 @@
 {% else %}
 <p>Welcome home, please login or create an account</p>
 {% endif %}
-<script>
-    
+<div id="game-container">
+<div id='puzzle-container'>
+    <h1>Daily Puzzle {{date}}</h1>
+    <h2>{{item_name}}</h2>
+    <img src="{{item_image}}"/>
+</div>
+<div>
+    <div id='game-status'></div>
+    <div id="guess-container">
+        <div class='guess-div-container'>
+        <div name="guessone" id="guessone" class="guess"></div>
+        <div name='guessone-status' id='guessone-status' class='guess-status'></div>
+        </div>
+        <div class='guess-div-container'>
+        <div name="guesstwo" id="guesstwo" class="guess"></div>
+        <div name='guesstwo-status' id='guesstwo-status' class='guess-status'></div>
+        </div>
+        <div class='guess-div-container'>
+        <div name="guessthree" id="guessthree" class="guess"></div>
+        <div name='guessthree-status' id='guessthree-status' class='guess-status'></div>
+        </div>
+        <div class='guess-div-container'>
+        <div name="guessfour" id="guessfour" class="guess"></div>
+        <div name='guessfour-status' id='guessfour-status' class='guess-status'></div>
+        </div>
+        <div class='guess-div-container'>
+        <div name="guessfive" id="guessfive" class="guess"></div>
+        <div name='guessfive-status' id='guessfive-status' class='guess-status'></div>
+        </div>
+        <div class='guess-div-container'>
+        <div name="guesssix" id="guesssix" class="guess"></div>
+        <div name='guesssix-status' id='guesssix-status' class='guess-status'></div>
+        </div>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        {{form}}
+        <input type="hidden" value='{{submission_validation}}' id="submission_validation" name="submission_validation"></input>
+        <button type="submit">Submit Guess</button>
+    </form>
+    <div id='comments-container'>
+        {% for comment in comments %}
+            <h1>{{comment.user}}'s comment at {{comment.timestamp}}</h1>
+            {% if comment.image %}
+            <img src="{{comment.image.url}}" width='100' height='100'/>
+            {% endif %}
+            <p>{{comment.message}}</p>
+        {% endfor %}
+        <a href={% url "create_comment" %}>Make a comment</a>
+    </div>
+</div>
+</div>
+{% comment %} the logic behind the guesses {% endcomment %}
+{{guess|json_script:'account_guesses'}}
+<script id="game-state">
+    setState('{{date|escapejs}}', '{{guess_price|escapejs}}', '{{closeness|escapejs}}', '{{logged_in|escapejs}}', '{{item_price|escapejs}}')
 </script>
 {% endblock %}

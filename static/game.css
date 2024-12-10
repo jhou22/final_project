@@ -1,0 +1,30 @@
+.guess {
+    width: 70%;
+    height: 30px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+#guess-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.guess-status {
+    width: 30%;
+    height: 30px;
+    border: 1px solid black;
+}
+
+.guess-div-container {
+    display: flex;
+    gap: 5px;
+}

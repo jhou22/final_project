@@ -1,7 +1,167 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from datetime import date
+from .models import Guess, DailyPuzzle, Comment, PlayerProfile
+from .forms import GameForm, CommentForm
+from decimal import Decimal
+import uuid
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import *
+from django.urls import reverse
 
 # Create your views here.
 def home(request):
-    template_name = 'game/home.html'
+    num_to_string = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}
+    # Get a daily puzzle
+    daily_puzzle = get_daily_puzzle()
+    template_name = "game/home.html"
+    game_form = GameForm()
+    submission_validation = uuid.uuid4()
+    context = {
+        "item_name": daily_puzzle.item.name,
+        "item_image": daily_puzzle.item.image.url,
+        "item_price": daily_puzzle.item.price,
+        "form": game_form,
+        "closeness": None,
+        "guess_price": None,
+        "guess": [],
+        "date": date.today(),
+        "submission_validation": submission_validation,
+        "logged_in": False,
+        "comments": None,
+    }
+    if request.POST:
+        form = GameForm(request.POST or None)
+        if form.is_valid():
+            data = form.cleaned_data
+            if request.session.get("idempotency_key") == request.POST.get(
+                "submission_validation"
+            ):  # double submission
+                print("double submission")
+                return redirect("home")
+            request.session["idempotency_key"] = request.POST.get(
+                "submission_validation"
+            )  # set the session idempotency key to the form's key so that the new submission will go through, only when the keys are the same will it count as a double submission (prevents refreshes counting as posts)
+            item_price = Decimal(daily_puzzle.item.price)
+            guess_price = Decimal(data["guess"])
+            closeness = closeness_in_price(item_price, guess_price)
+            context["closeness"] = closeness
+            context["guess_price"] = guess_price
+            print(closeness)
+            if request.user.is_authenticated:
+                try:
+                    guess = Guess.objects.get(owner=request.user.playerprofile)
+                    num_guesses = guess.num_guesses
+                    # to prevent anyone posting a POST request with a guess even though they had a correct answer (prevents bypassing the submit button being disabled)
+                    if not guess.correctly_guessed and num_guesses < 6:
+                        setattr(guess, "num_guesses", num_guesses + 1)
+                        setattr(
+                            guess,
+                            "guess_" + num_to_string[num_guesses + 1],
+                            guess_price,
+                        )
+                        print(closeness)
+                        if closeness == "exact":
+                            setattr(guess, "correctly_guessed", True)
+                        setattr(
+                            guess,
+                            "closeness_guess_" + num_to_string[num_guesses + 1],
+                            closeness,
+                        )
+                        guess.save()
+                except Guess.DoesNotExist:
+                    # no guess object found, so create one and add the guess to this
+                    guess = Guess.objects.create(
+                        owner=request.user.playerprofile,
+                        daily_puzzle=daily_puzzle,
+                        num_guesses=1,
+                        guess_one=guess_price,
+                        closeness_guess_one=closeness,
+                    )
+        else:
+            print("Not valid form")
+            return redirect("home")
+
+            # todo: fix this messy logic later
+    if request.user.is_authenticated:
+        context["logged_in"] = True
+        try:
+            guess = Guess.objects.get(owner=request.user.playerprofile)
+            num_guesses = guess.num_guesses
+            guess_object = guess.guess_one
+            closeness_object = guess.closeness_guess_one
+            guesses = ['guess_one', 'guess_two', 'guess_three', 'guess_four', 'guess_five', 'guess_six']
+            for index, guess_name in enumerate(guesses):
+                guess_object = getattr(guess, guess_name)
+                closeness_object = getattr(guess, "closeness_guess_" + num_to_string[index + 1])
+                if guess_object is None and closeness_object is None:
+                    break
+                if guess == 'guess_one':
+                    context["guess"] = [
+                        {"guess": guess_object, "closeness": closeness_object}
+                    ]
+                else:
+                    context["guess"].append(
+                        {"guess": guess_object, "closeness": closeness_object}
+                    )
+            print(context["guess"])
+            if (
+                not guess.correctly_guessed and num_guesses >= 6
+            ) or guess.correctly_guessed:
+                context["comments"] = Comment.objects.filter(puzzle=daily_puzzle)
+        except Guess.DoesNotExist:
+            Guess.objects.create(
+                owner=request.user.playerprofile,
+                daily_puzzle=daily_puzzle,
+            )
+            
     
-    return render(request, template_name)
+    return render(request, template_name, context)
+
+
+def get_daily_puzzle():
+    todays_date = date.today()
+    return DailyPuzzle.objects.filter(date=todays_date)[0]
+
+
+def create_daily_puzzle():
+    pass
+
+
+def closeness_in_price(item_price, guess_price):
+    closeness = ""  # guess is within 10% of the item price
+    close_to_item_price_percentage = Decimal(0.25)
+    lower_bound = item_price * Decimal(0.9)
+    upper_bound = item_price * Decimal(1.1)
+    if lower_bound <= guess_price <= upper_bound:
+        return "exact"
+
+    # guaranteed to be lower or greater than 10% of the item price
+    if guess_price < lower_bound:
+        closeness = "lower "
+    else:
+        closeness = "upper "
+
+    if abs(item_price - guess_price) / item_price <= close_to_item_price_percentage:
+        closeness += "close"
+    else:
+        closeness += "far"
+
+    return closeness
+
+class CreateCommentView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'game/create_comment.html'
+    def get_object(self, queryset = ...):
+        return PlayerProfile.objects.get(user=self.request.user)
+    
+    def form_valid(self, form):
+        daily_puzzle = get_daily_puzzle()
+        user = PlayerProfile.objects.get(user=self.request.user)
+        form.instance.puzzle = daily_puzzle
+        form.instance.user = user
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('home')
+    

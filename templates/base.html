@@ -34,9 +34,10 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="{% static "base.css" %}">
+    <link rel="stylesheet" href="{% static "game.css" %}">
     <!-- Import the custom Bootstrap 4 theme from our hosted CDN -->
     {% comment %} <link rel="stylesheet" href="//demo.productionready.io/main.css" /> {% endcomment %}
-    <script src="{% static "functions.js" %}"></script>
+    <script src="{% static "script.js" %}"></script>
   </head>
   <body>
     <!--[if lt IE 7]>
@@ -67,9 +68,19 @@
           <li>
             <a class="nav-link" href="{% url "friends" request.user.playerprofile.pk %}">
               {% comment %} <img src="" class="user-pic" /> {% endcomment %}
-              {{request.user}} friends
+              {{request.user}}'s friends
             </a>
           </li>
+          <li>
+            <a class="nav-link" href="{% url "profiles" %}">
+              {% comment %} <img src="" class="user-pic" /> {% endcomment %}
+              Search for people
+            </a>
+          </li>
+          <a class="nav-link" href="{% url "account_logout"%}">
+            {% comment %} <img src="" class="user-pic" /> {% endcomment %}
+            Logout
+          </a>
           {% else %}
           <li class="nav-item">
             <a class="nav-link" href="{% url "account_login" %}">Sign in</a>

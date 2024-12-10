@@ -19,7 +19,6 @@ class PlayerProfile(models.Model):
     join_date = models.DateTimeField(default=timezone.now, verbose_name='Account creation date')
     dob = models.DateField(verbose_name='date of birth', default=date(1970, 1, 1).isoformat())
     profile_picture = models.ImageField(default='default-profile-icon.png', verbose_name='Profile picture', upload_to='profile-pictures/')
-    fastest_guess = models.TimeField(verbose_name='Time of fastest guess', default=None, blank=True, null=True)
     bio = models.TextField(blank=False, verbose_name='Bio', default='No information written')
 
     
@@ -29,6 +28,29 @@ class PlayerProfile(models.Model):
     def __str__(self) -> str:
         return f'{self.username}'
     
+    def add_friend(self, to_user):
+        if self == to_user:
+            return # adding yourself lol
+        if self is None:
+            return # do you not exist or something
+        if to_user is None:
+            return # adding no one? impossible
+        if len(list(Friend.objects.filter(from_user=self, to_user=to_user))) != 0:
+            return
+        if len(list(Friend.objects.filter(from_user=to_user, to_user=self))) != 0:
+            return
+        Friend.objects.create(from_user=self, to_user=to_user)
+
+    def is_friends(self, to_user):
+        return len(list(Friend.objects.filter(from_user=self, to_user=to_user))) != 0 or len(list(Friend.objects.filter(from_user=to_user, to_user=self))) != 0
+    
+    def friends_since(self, to_user):
+        if len(list(Friend.objects.filter(from_user=self, to_user=to_user))) != 0:
+            return Friend.objects.filter(from_user=self, to_user=to_user)[0].friendship_created
+        elif len(list(Friend.objects.filter(from_user=to_user, to_user=self))) != 0:
+            return Friend.objects.filter(from_user=to_user, to_user=self)[0].friendship_created
+        else:
+            return None
 class Friend(models.Model):
     from_user = models.ForeignKey(PlayerProfile, verbose_name='From user', on_delete=models.CASCADE, related_name='from_user')
     to_user = models.ForeignKey(PlayerProfile, verbose_name='To user', on_delete=models.CASCADE, related_name='to_user')

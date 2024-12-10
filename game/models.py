@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import *
+from accounts.models import PlayerProfile
 
 # Create your models here.
 class Item(models.Model):
@@ -18,6 +18,9 @@ class CommonPuzzle(models.Model):
 
 class DailyPuzzle(CommonPuzzle):
     date = models.DateField(verbose_name='Date of daily puzzle', auto_now_add=True, blank=False, null=False)
+
+    def __str__(self) -> str:
+        return f'Daily Puzzle {self.date}'
     
 class PracticePuzzle(CommonPuzzle):
     pass
@@ -28,6 +31,10 @@ class Guess(models.Model):
     daily_puzzle = models.ForeignKey(DailyPuzzle, null=True, blank=True, on_delete=models.CASCADE, verbose_name='Daily Puzzle')
     practice_puzzle = models.ForeignKey(PracticePuzzle, null=True, blank=True, on_delete=models.CASCADE, verbose_name='Practice Puzzle')
     
+    num_guesses = models.IntegerField(verbose_name='Number of guesses made', default=0, null=False, blank=False)
+    
+    correctly_guessed = models.BooleanField(verbose_name='Correctly guessed price', default=False, null=False, blank=False)
+    
     guess_one = models.DecimalField(verbose_name='Guess 1', max_digits=10, decimal_places=2, default=None, null=True, blank=True)
     guess_two = models.DecimalField(verbose_name='Guess 2', max_digits=10, decimal_places=2, default=None, null=True, blank=True)
     guess_three = models.DecimalField(verbose_name='Guess 3', max_digits=10, decimal_places=2, default=None, null=True, blank=True)
@@ -35,6 +42,18 @@ class Guess(models.Model):
     guess_five = models.DecimalField(verbose_name='Guess 5', max_digits=10, decimal_places=2, default=None, null=True, blank=True)
     guess_six = models.DecimalField(verbose_name='Guess 6', max_digits=10, decimal_places=2, default=None, null=True, blank=True)
     
+    closeness_guess_one = models.CharField(verbose_name='Guess 1 closeness', max_length=20, default=None, null=True, blank=True)
+    closeness_guess_two = models.CharField(verbose_name='Guess 2 closeness', max_length=20, default=None, null=True, blank=True)
+    closeness_guess_three = models.CharField(verbose_name='Guess 3 closeness', max_length=20, default=None, null=True, blank=True)
+    closeness_guess_four = models.CharField(verbose_name='Guess 4 closeness', max_length=20, default=None, null=True, blank=True)
+    closeness_guess_five = models.CharField(verbose_name='Guess 5 closeness', max_length=20, default=None, null=True, blank=True)
+    closeness_guess_six = models.CharField(verbose_name='Guess 6 closeness', max_length=20, default=None, null=True, blank=True)
+    
+    def __str__(self) -> str:
+        if self.daily_puzzle:
+            return f'{self.owner.username}\'s {self.daily_puzzle.date} daily puzzle guess'
+        else:
+            return f'{self.owner.username}\'s practice puzzle guess'
 class Comment(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, verbose_name="Time of comment written", blank=False, null=False)
     user = models.ForeignKey(PlayerProfile, on_delete=models.CASCADE, null=False, blank=False)

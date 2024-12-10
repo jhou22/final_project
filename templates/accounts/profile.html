@@ -5,6 +5,16 @@
 <h1>{{profile.username}}</h1>
 <h2>Joined {{profile.join_date}}</h2>
 <h2>Born {{profile.dob}}</h2>
-<h3>Link: <a href="{{profile.get_absolute_url}}">Link</a></h3>
-
+{% comment %} <h3>Link: <a href="{{profile.get_absolute_url}}">Link</a></h3> {% endcomment %}
+<h3>Bio: {{profile.bio}}</h3>
+{% if is_friends == 'Is itself' %}
+<h1><a href="{% url "update_profile" %}">Update</a></h1>
+<h1><a href="{% url "delete_profile" %}">Delete Account</a></h1>
+{% endif %}
+{% if is_friends == False %}
+<h1><a href="{% url "add_friend" profile.pk %}">Add Friends</a></h1>
+{% endif %}
+{% if is_friends == True %}
+<h1>Friends since {{friends_since}}</h1>
+{% endif %}
 {% endblock %}
