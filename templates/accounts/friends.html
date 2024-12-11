@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
+{% comment %} contains friends {% endcomment %}
 <div id='friends-container'>
 <h1>{{username}}'s friends</h1>
 <div>
     <table class="players-table">
+        {% comment %} header {% endcomment %}
         <tr class="players-categories">
             <th>Profile Picture</th>
             <th>Username</th>
         </tr>
+        {% comment %} goes through every friend and output them {% endcomment %}
     {% for friend in friends %}
         <tr>
         {% if friend.from_user.username == username %}

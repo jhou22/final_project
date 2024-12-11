@@ -11,22 +11,8 @@
     <title>{% block title %}KROGERDLE{% endblock %}</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="{% static "normalize.css" %}"> {% comment %}
-    <link rel="stylesheet" href="" />
-    {% endcomment %}
-    <!-- Import Ionicon icons & Google Fonts our Bootstrap theme relies on -->
-    {% comment %} <link
-      href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
-      rel="stylesheet"
-      type="text/css"
-    /> {% endcomment %}
-    {% comment %}
-    <link
-      href="//fonts.googleapis.com/css?family=Titillium+Web:700|Source+Serif+Pro:400,700|Merriweather+Sans:400,700|Source+Sans+Pro:400,300,600,700,300italic,400italic,600italic,700italic"
-      rel="stylesheet"
-      type="text/css"
-    />
-    {% endcomment %}
+    {% comment %} roboto font inclusion {% endcomment %}
+    {% comment %} stylesheets {% endcomment %}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -36,8 +22,6 @@
     <link rel="stylesheet" href="{% static "base.css" %}">
     <link rel="stylesheet" href="{% static "game.css" %}">
     <link rel="stylesheet" href="{% static "accounts.css" %}">
-    <!-- Import the custom Bootstrap 4 theme from our hosted CDN -->
-    {% comment %} <link rel="stylesheet" href="//demo.productionready.io/main.css" /> {% endcomment %}
     <script src="{% static "script.js" %}"></script>
   </head>
   <body>
@@ -47,10 +31,7 @@
         <a href="#">upgrade your browser</a> to improve your experience.
       </p>
     <![endif]-->
-
-    {% comment %}
-    <script src="" async defer></script>
-    {% endcomment %}
+    {% comment %} navbar {% endcomment %}
     <nav>
       <div class="container">
         <h1 id="brand"><a href="/">K R O G E R D L E</a></h1>
@@ -58,24 +39,20 @@
           {% if request.user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="{% url "profile" request.user.playerprofile.pk %}">
-              {% comment %} <img src="" class="user-pic" /> {% endcomment %}
               {{request.user}}
             </a>
           </li>
           <li>
             <a class="nav-link" href="{% url "friends" request.user.playerprofile.pk %}">
-              {% comment %} <img src="" class="user-pic" /> {% endcomment %}
               {{request.user}}'s friends
             </a>
           </li>
           <li>
             <a class="nav-link" href="{% url "profiles" %}">
-              {% comment %} <img src="" class="user-pic" /> {% endcomment %}
               Search for people
             </a>
           </li>
           <a class="nav-link" href="{% url "account_logout"%}">
-            {% comment %} <img src="" class="user-pic" /> {% endcomment %}
             Logout
           </a>
           {% else %}

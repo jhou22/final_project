@@ -22,7 +22,9 @@
     <h2>{{item_name}}</h2>
     <img src="{{item_image}}" width="300" height="300"/>
 </div>
+{% comment %} guesses {% endcomment %}
 <div id="guess-parent-container">
+    {% comment %} shows when the game is over {% endcomment %}
     <div id='game-status'></div>
     <div id="guess-container">
         <div class='guess-div-container'>
@@ -71,7 +73,7 @@
         {% endif %}
     </div>
 </div>
-</div>
+
 {% comment %} the logic behind the guesses {% endcomment %}
 {{guess|json_script:'account_guesses'}}
 <script id="game-state">

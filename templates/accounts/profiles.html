@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
+{% comment %} list of all potential profiles {% endcomment %}
 <div id="profiles-container">
+    {% comment %} submits for filtering {% endcomment %}
     <form action="{% url "profiles" %}" id="search-player-form">
         {{form}}
         <button type='submit'>Search</button>

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <form method="post" enctype="multipart/form-data">
+    {% comment %} form for updating form {% endcomment %}
     {% csrf_token %}
 {{form}}
 <input type="submit" value="Update"></input>

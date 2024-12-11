@@ -1,10 +1,72 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div id='practice-puzzle-container'>
-    <h1>Practice Puzzle</h1>
-    <h2>{{puzzle.item.name}}</h2>
-    <img src="{{puzzle.item.image.image}}" width="300" height="300"/>
-</div>
-{% endblock content %}
+<div id="intro">
+{% if request.user.is_authenticated %}
+<p>Welcome to KROGERDLE, {{request.user}}</p>
+{% else %} 
+<p>Welcome to KROGERDLE, please login or create an account</p>
+{% endif %}
 
+    {% if random_puzzle_pk %}
+    <a class="nav-link" href="{% url "random_puzzle" random_puzzle_pk %}">
+      {% comment %} <img src="" class="user-pic" /> {% endcomment %}
+      Random Puzzle
+    </a>
+    {% endif %}
+
+</div>
+<div id="game-container">
+    <div id='puzzle-container'>
+        <h1>Practice Puzzle</h1>
+        <h2>{{puzzle.item.name}}</h2>
+        <img src="{{puzzle.item.image.image}}" width="300" height="300"/>
+    </div>
+{% comment %} guesses {% endcomment %}
+<div id="guess-parent-container">
+    {% comment %} shows when the game is over {% endcomment %}
+    <div id='game-status'></div>
+    <div id="guess-container">
+        <div class='guess-div-container'>
+        {% if guesses.guess_one %}
+        <div name="guessone" id="guessone" class="guess">{{guesses.guess_one}}</div>
+        <div name='guessone-status' id='guessone-status' class='guesses-status'>{{guesses.closeness_guess_one}}</div>
+        {% endif %}
+        
+        </div>
+        <div class='guess-div-container'>
+        <div name="guesstwo" id="guesstwo" class="guess"></div>
+        <div name='guesstwo-status' id='guesstwo-status' class='guess-status'></div>
+        </div>
+        <div class='guess-div-container'>
+        <div name="guessthree" id="guessthree" class="guess"></div>
+        <div name='guessthree-status' id='guessthree-status' class='guess-status'></div>
+        </div>
+        <div class='guess-div-container'>
+        <div name="guessfour" id="guessfour" class="guess"></div>
+        <div name='guessfour-status' id='guessfour-status' class='guess-status'></div>
+        </div>
+        <div class='guess-div-container'>
+        <div name="guessfive" id="guessfive" class="guess"></div>
+        <div name='guessfive-status' id='guessfive-status' class='guess-status'></div>
+        </div>
+        <div class='guess-div-container'>
+        <div name="guesssix" id="guesssix" class="guess"></div>
+        <div name='guesssix-status' id='guesssix-status' class='guess-status'></div>
+        </div>
+    </div>
+    <form method="post" id="guess-form">
+        {% csrf_token %}
+        {{form}}
+        <input type="hidden" value='{{submission_validation}}' id="submission_validation" name="submission_validation"></input>
+        <button type="submit">Submit Guess</button>
+    </form>
+</div>
+
+{% comment %} the logic behind the guesses {% endcomment %}
+
+{% comment %} {{guess|json_script:'account_guesses'}}
+<script id="game-state">
+    setState('{{date|escapejs}}', '{{guess_price|escapejs}}', '{{closeness|escapejs}}', '{{logged_in|escapejs}}', '{{item_price|escapejs}}')
+</script> {% endcomment %}
+{% endblock %}
