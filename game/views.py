@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from datetime import date
-from .models import Guess, DailyPuzzle, Comment, PlayerProfile, PracticePuzzle
+from .models import Guess, DailyPuzzle, Comment, PlayerProfile, PracticePuzzle, Item
 from .forms import GameForm, CommentForm
 from decimal import Decimal
 import uuid
@@ -128,7 +128,14 @@ def home(request):
 def get_daily_puzzle():
     '''gets a daily puzzle from items thats marked as daily_item'''
     todays_date = date.today()
-    return DailyPuzzle.objects.filter(date=todays_date)[0]
+    puzzles = DailyPuzzle.objects.filter(date=todays_date)
+    if len(puzzles) == 0:
+        potential_daily_puzzles = Item.objects.exclude(used_as_daily=True, daily_item=True)
+        item = random.choice(potential_daily_puzzles)
+        daily = DailyPuzzle.objects.create(item=item)
+        return daily
+    else:
+        return puzzles[0]
 
 
 def create_daily_puzzle():
