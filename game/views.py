@@ -221,8 +221,6 @@ class RandomPracticePuzzleView(LoginRequiredMixin, DetailView):
             guess = Guess.objects.get(owner=self.request.user.playerprofile, practice_puzzle=PracticePuzzle.objects.get(pk=self.kwargs['pk']))
             print(guess.guess_one)
             context["guesses"] = guess
-            context['submission_validation'] = uuid.uuid4()
-            context['form'] = GameForm()
         except Guess.DoesNotExist:
             # creates a guess object and attaches this puzzle to it
             puzzle = PracticePuzzle.objects.get(
@@ -233,6 +231,9 @@ class RandomPracticePuzzleView(LoginRequiredMixin, DetailView):
                 practice_puzzle=puzzle,
                 num_guesses=0,
             )
+        context['submission_validation'] = uuid.uuid4()
+        context['form'] = GameForm()
+        print(context['form'])
         return context
     # virutally the same as the home view logic
     def post(self, request, *args, **kwargs):
