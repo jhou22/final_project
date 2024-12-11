@@ -88,6 +88,7 @@ def home(request):
 
     # if the user is authenticated, return the guesses model fields instead of the actual guess
     if request.user.is_authenticated:
+        context["random_puzzle_pk"] = get_random_puzzle(request)
         context["logged_in"] = True
         try:
             # iterate through all the guess fields and attach it to the context
@@ -125,7 +126,6 @@ def home(request):
             ) or guess.correctly_guessed:
                 context["comments"] = Comment.objects.filter(puzzle=daily_puzzle)
                 # passes a random puzzle in for authenticated users ONLY
-            context["random_puzzle_pk"] = get_random_puzzle(request)
         except Guess.DoesNotExist:
             Guess.objects.create(
                 owner=request.user.playerprofile,
@@ -135,7 +135,7 @@ def home(request):
             # for the template
     if context["comments"] is not None:
         context["show_comment_link"] = True
-
+    
     return render(request, template_name, context)
 
 
