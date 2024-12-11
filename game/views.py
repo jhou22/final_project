@@ -132,7 +132,7 @@ def get_daily_puzzle():
     if len(puzzles) == 0:
         potential_daily_puzzles = Item.objects.exclude(used_as_daily=True, daily_item=True)
         item = random.choice(potential_daily_puzzles)
-        daily = DailyPuzzle.objects.create(item=item)
+        daily = DailyPuzzle.objects.create(item=item, used_as_daily=True)
         return daily
     else:
         return puzzles[0]
