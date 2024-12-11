@@ -211,6 +211,7 @@ class RandomPracticePuzzleView(LoginRequiredMixin, DetailView):
     template_name = "game/random.html"
     context_object_name = "puzzle"
 
+    # gets the form associated with it and attach it, the guess associated with it and attach it, and the idempotency key, just like in the home view
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         print("get_context_data")
@@ -233,7 +234,7 @@ class RandomPracticePuzzleView(LoginRequiredMixin, DetailView):
                 num_guesses=0,
             )
         return context
-
+    # virutally the same as the home view logic
     def post(self, request, *args, **kwargs):
         num_to_string = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}
         form = GameForm(request.POST)

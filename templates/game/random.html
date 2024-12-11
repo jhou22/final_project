@@ -7,7 +7,7 @@
 {% else %} 
 <p>Welcome to KROGERDLE, please login or create an account</p>
 {% endif %}
-
+{% comment %} random {% endcomment %}
     {% if random_puzzle_pk %}
     <a class="nav-link" href="{% url "random_puzzle" random_puzzle_pk %}">
       {% comment %} <img src="" class="user-pic" /> {% endcomment %}
