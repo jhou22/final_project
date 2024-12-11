@@ -233,7 +233,6 @@ class RandomPracticePuzzleView(LoginRequiredMixin, DetailView):
             )
         context['submission_validation'] = uuid.uuid4()
         context['form'] = GameForm()
-        print(context['form'])
         return context
     # virutally the same as the home view logic
     def post(self, request, *args, **kwargs):

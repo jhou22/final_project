@@ -30,29 +30,57 @@
         <div class='guess-div-container'>
         {% if guesses.guess_one %}
         <div name="guessone" id="guessone" class="guess">{{guesses.guess_one}}</div>
-        <div name='guessone-status' id='guessone-status' class='guesses-status'>{{guesses.closeness_guess_one}}</div>
+        <div name='guessone-status' id='guessone-status' class='guess-status'>{{guesses.closeness_guess_one}}</div>
+        {% else %}
+        <div name="guessone" id="guessone" class="guess"></div>
+        <div name='guessone-status' id='guessone-status' class='guess-status'></div>
         {% endif %}
-        
         </div>
         <div class='guess-div-container'>
+        {% if guesses.guess_two %}
+        <div name="guesstwo" id="guesstwo" class="guess">{{guesses.guess_two}}</div>
+        <div name='guesstwo-status' id='guesstwo-status' class='guess-status'>{{guesses.closeness_guess_two}}</div>
+        {% else %}
         <div name="guesstwo" id="guesstwo" class="guess"></div>
         <div name='guesstwo-status' id='guesstwo-status' class='guess-status'></div>
+        {% endif %}
         </div>
         <div class='guess-div-container'>
+        {% if guesses.guess_three %}
+        <div name="guessthree" id="guessthree" class="guess">{{guesses.guess_three}}</div>
+        <div name='guessthree-status' id='guessthree-status' class='guess-status'>{{guesses.closeness_guess_three}}</div>
+        {% else %}
         <div name="guessthree" id="guessthree" class="guess"></div>
         <div name='guessthree-status' id='guessthree-status' class='guess-status'></div>
+        {% endif %}
         </div>
         <div class='guess-div-container'>
+        {% if guesses.guess_four %}
+        <div name="guessfour" id="guessfour" class="guess">{{guesses.guess_four}}</div>
+        <div name='guessfour-status' id='guessfour-status' class='guess-status'>{{guesses.closeness_guess_four}}</div>
+        {% else %}
         <div name="guessfour" id="guessfour" class="guess"></div>
         <div name='guessfour-status' id='guessfour-status' class='guess-status'></div>
+        {% endif %}
         </div>
         <div class='guess-div-container'>
+        {% if guesses.guess_five %}
+        <div name="guessfive" id="guessfive" class="guess">{{guesses.guess_five}}</div>
+        <div name='guessfive-status' id='guessfive-status' class='guess-status'>{{guesses.closeness_guess_five}}</div>
+        {% else %}
         <div name="guessfive" id="guessfive" class="guess"></div>
         <div name='guessfive-status' id='guessfive-status' class='guess-status'></div>
+        {% endif %}
         </div>
         <div class='guess-div-container'>
+        {% if guesses.guess_six %}
+        <div name="guesssix" id="guesssix" class="guess">{{guesses.guess_six}}</div>
+        <div name='guesssix-status' id='guesssix-status' class='guess-status'>{{guesses.closeness_guess_six}}</div>
+        {% else %}
         <div name="guesssix" id="guesssix" class="guess"></div>
         <div name='guesssix-status' id='guesssix-status' class='guess-status'></div>
+        {% endif %}
+        
         </div>
     </div>
     <form method="post" id="guess-form">
