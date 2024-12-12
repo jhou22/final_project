@@ -52,6 +52,7 @@ def home(request):
             context["closeness"] = closeness
             context["guess_price"] = guess_price
             print(closeness)
+            # creates a guess if it doesnt exist, or add the guess to the guess object atttached
             if request.user.is_authenticated:
                 try:
                     guess = Guess.objects.get(owner=request.user.playerprofile, daily_puzzle=daily_puzzle)
@@ -326,7 +327,7 @@ class RandomPracticePuzzleView(LoginRequiredMixin, DetailView):
     #             guess.save()
     #     return super().form_valid(form)
 
-
+# gets a random puzzle by filtering all puzzles not marked as daily_puzzle
 def get_random_puzzle(request):
     user = request.user
     potential_practice_puzzles = PracticePuzzle.objects.all()

@@ -1,3 +1,5 @@
+// jhou22@bu.edu, Jianhui Hou, U26752765
+// script for inputting data into the divs
 function setState(currentDate, guess, difference, logged_in, actual_price) {
   const alphabet = {
     '1': 'one',
@@ -56,6 +58,7 @@ function setState(currentDate, guess, difference, logged_in, actual_price) {
     }
     return
   }
+  // push values if the values array exists and we haven't won the game yet, and set the game status accordingly
   if (values && values !== 'undefined' && values[currentDate] !== 'undefined') {
     console.log(gameStatus !== 'WIN')
     if (values[currentDate].length < 6 && guess !== 'None' && difference !== 'None' && (gameStatus != 'WIN' && gameStatus != 'LOSE')) {

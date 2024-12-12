@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
+{% comment %} Jianhui Hou, U26752765, jhou22@bu.edu {% endcomment %}
+{% comment %} File for deleting a profile {% endcomment %}
 <h2>Are you sure you want to delete this account: {{user.username}}? This action is irreversible!</h2>
 <form method="post">
     {% csrf_token %}

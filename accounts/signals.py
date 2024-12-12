@@ -5,6 +5,7 @@ from allauth.account.signals import user_signed_up
 from django.dispatch import receiver
 from .models import PlayerProfile
 
+# creates account when email verified
 @receiver(user_signed_up)
 def email_confirmed(request, user, **kwargs):
     email_address = request.POST['email']
@@ -13,7 +14,7 @@ def email_confirmed(request, user, **kwargs):
     # dob_datetime = convert_to_datetime(dob)
     PlayerProfile.objects.create(email=email_address, username=username, dob=dob, user=user)
     
-    
+    # converts datetime based on string
 def convert_to_datetime(date_string):
     common_formats = [
         "%Y-%m-%d", "%m/%d/%Y", "%d-%m-%Y", 
